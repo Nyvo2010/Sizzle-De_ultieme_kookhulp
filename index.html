@@ -1,90 +1,179 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f7f7f7;
-}
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sizzle — De ultieme kookhulp (uitgebreid)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="container" role="application" aria-label="Sizzle recept app">
+    <aside class="sidebar" aria-label="Navigatie en filters">
+        <div class="brand">
+            <!-- lokaal geüploade afbeelding (gebruik dezelfde map) -->
+            <img src="/mnt/data/b5ea4e23-2a63-4f8e-82ef-435ded56d1b9.png" alt="Sizzle logo" class="logo" />
+            <h1>Sizzle</h1>
+            <p class="muted">Minimal. Slim. Snel koken.</p>
+        </div>
 
-header {
-    background: #ffffff;
-    padding: 20px;
-    position: sticky;
-    top: 0;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
+        <div class="box">
+            <label class="label">Zoek</label>
+            <input id="searchInput" type="search" placeholder="Zoek titel, ingrediënt of tag…" aria-label="Zoeken"/>
+        </div>
 
-input, select {
-    padding: 8px;
-    font-size: 16px;
-}
+        <div class="box">
+            <label class="label">Tags (klik meerdere)</label>
+            <div id="tagContainer" class="tag-list" aria-live="polite"></div>
+        </div>
 
-#recipeList {
-    padding: 20px;
-    display: grid;
-    gap: 15px;
-}
+        <div class="box split">
+            <div>
+                <label class="label">Max tijd (min)</label>
+                <input id="maxTime" type="number" min="1" value="120" />
+            </div>
+            <div>
+                <label class="label">Moeilijkheid</label>
+                <select id="difficulty">
+                    <option value="any">Alle</option>
+                    <option value="snel">Snel</option>
+                    <option value="gemiddeld">Gemiddeld</option>
+                    <option value="moeilijk">Moeilijk</option>
+                </select>
+            </div>
+        </div>
 
-.recipe-card {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    transition: 0.2s;
-}
+        <div class="box">
+            <label class="label">Sorteren</label>
+            <select id="sortBy">
+                <option value="relevance">Relevantie</option>
+                <option value="time">Korte tijd eerst</option>
+                <option value="difficulty">Moeilijkheid</option>
+            </select>
+        </div>
 
-.recipe-card:hover {
-    transform: scale(1.02);
-    border-color: black;
-}
+        <div class="box profile">
+            <label class="label">Profiel</label>
+            <input id="username" placeholder="Naam (lokaal opslaan)" />
+            <div class="row" style="margin-top:8px">
+                <button id="saveProfileBtn" class="btn">Opslaan</button>
+                <button id="clearProfileBtn" class="btn ghost">Verwijder</button>
+            </div>
+            <div class="small muted" id="profileHint">Niet gedeeld — lokaal opgeslagen.</div>
+        </div>
 
-#recipePopup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.45);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        <div class="box">
+            <div class="small muted">Favorieten</div>
+            <div id="favList" class="fav-list" aria-live="polite"></div>
+        </div>
 
-.hidden {
-    display: none;
-}
+        <div class="box">
+            <button id="exportBtn" class="btn">Export JSON</button>
+            <button id="importBtn" class="btn ghost">Import JSON</button>
+            <input id="importFile" type="file" accept="application/json" class="hidden" />
+        </div>
 
-.popup-content {
-    background: white;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 10px;
-    position: relative;
-}
+        <footer class="small muted foot">Prototype — AI-suggesties heuristisch, lokaal only.</footer>
+    </aside>
 
-#closePopup {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border: none;
-    background: none;
-    font-size: 18px;
-    cursor: pointer;
-}
+    <main class="main" role="main">
+        <div class="topbar">
+            <div class="resultsInfo">
+                <strong id="resultCount">0</strong> recepten
+                <span id="recommendText" class="muted"></span>
+            </div>
 
-button {
-    padding: 10px;
-    margin-top: 15px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
+            <div class="controls">
+                <button id="viewFavs" class="btn ghost">Toon favorieten</button>
+                <button id="openPlanner" class="btn ghost">Meal planner</button>
+                <button id="openShopping" class="btn ghost">Boodschappen</button>
+            </div>
+        </div>
 
-button:hover {
-    opacity: 0.8;
-}
+        <section id="grid" class="grid" aria-live="polite"></section>
+
+        <!-- DETAIL MODAL -->
+        <div id="detailModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+            <div class="panel">
+                <header class="panel-head">
+                    <div>
+                        <h2 id="detailTitle"></h2>
+                        <div class="muted" id="detailMeta"></div>
+                    </div>
+                    <div class="panel-actions">
+                        <button id="detailFavBtn" class="btn">Favoriet</button>
+                        <button id="closeDetail" class="btn ghost">Sluiten</button>
+                    </div>
+                </header>
+
+                <div class="panel-body">
+                    <div class="cols">
+                        <div class="col">
+                            <h3>Ingrediënten</h3>
+                            <ul id="detailIngredients" class="ingredient-list"></ul>
+                            <div class="small muted">Klik op ingrediënt om aan boodschappenlijst toe te voegen</div>
+                        </div>
+                        <div class="col">
+                            <h3>Stappen</h3>
+                            <ol id="detailSteps" class="steps-list"></ol>
+                            <div class="row" style="gap:8px;margin-top:8px">
+                                <button id="analyzeBtn" class="btn">AI stap-analyse</button>
+                                <button id="subBtn" class="btn ghost">AI vervangers</button>
+                                <button id="askBtn" class="btn ghost">Vraag</button>
+                            </div>
+                            <div id="aiOutput" class="ai-output"></div>
+                        </div>
+                    </div>
+
+                    <div class="step-runner hidden" id="stepRunner">
+                        <h4>Stapmodus</h4>
+                        <div id="currentStepText" class="current-step"></div>
+                        <div class="runner-controls">
+                            <button id="prevStep" class="btn ghost">Vorige</button>
+                            <button id="nextStep" class="btn">Volgende</button>
+                            <button id="startTimer" class="btn ghost">Start timer</button>
+                            <div id="timerDisplay" class="muted small">00:00</div>
+                        </div>
+                        <div id="stepHints" class="small muted"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopping & Planner Panels -->
+        <div id="shoppingPanel" class="side-panel hidden" aria-hidden="true">
+            <header>
+                <h3>Boodschappenlijst</h3>
+                <div class="panel-actions">
+                    <button id="clearShopping" class="btn ghost">Leeg</button>
+                    <button id="closeShopping" class="btn ghost">Sluiten</button>
+                </div>
+            </header>
+            <main>
+                <ul id="shoppingList"></ul>
+                <div style="margin-top:10px">
+                    <button id="downloadShopping" class="btn">Download .txt</button>
+                    <button id="autoFill" class="btn ghost">Auto-vul uit favorieten</button>
+                </div>
+            </main>
+        </div>
+
+        <div id="plannerPanel" class="side-panel hidden" aria-hidden="true">
+            <header>
+                <h3>Meal planner (week)</h3>
+                <div class="panel-actions">
+                    <button id="clearPlanner" class="btn ghost">Reset</button>
+                    <button id="closePlanner" class="btn ghost">Sluiten</button>
+                </div>
+            </header>
+            <main>
+                <div id="plannerGrid" class="planner-grid"></div>
+            </main>
+        </div>
+
+    </main>
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
