@@ -1,10 +1,8 @@
 # Sizzle API Documentatie
 
-**Architectuurkeuze:** De app heeft **geen gebruikersprofielen**, **geen login**, **geen server-opgeslagen voorkeuren**, en **geen favorieten op de server**.
-Alle voorkeur-tags en gedrag worden **lokaal opgeslagen** in de app.
-De server levert alleen recepten + AI-antwoorden.
-
-Hierdoor is de API extreem simpel, en alle personalisatie gebeurt client-side.
+**Architectuurkeuze:** De app heeft **gebruikersprofielen**, **login**, **server-opgeslagen voorkeuren**, en ** favorieten op de server**.
+Alle voorkeur-tags en gedrag worden **op de server opgeslagen**.
+Daarnaast doet de server de recepten + AI-antwoorden.
 
 ---
 
