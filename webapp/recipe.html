@@ -54,15 +54,14 @@
             </div>
 
             <aside class="recipe-sidebar">
-                <div class="ai-chat-box">
-                    <div>
-                        <div class="ai-chat-header">Kan dit zonder boter?</div>
-                        <div class="ai-messages" id="ai-messages">
-                            <p><strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</strong> Nullam dictum, odio non pulvinar sodales, turpis nisi vehicula risus, ut commodo est lacus sed felis. Vivamus a augue facilisis, dignissim quam.</p>
-                        </div>
+                    <div class="ai-chat-box">
+                    <div class="ai-robot-wrapper">
+                        <span class="material-symbols-rounded ai-robot">robot_2</span>
+                        <div class="ai-robot-text">Vraag AI iets over dit recept</div>
                     </div>
+                    <div class="ai-messages" id="ai-messages"></div>
                     <div class="ai-input-wrapper">
-                        <input type="text" placeholder="Stel een vraag..." id="ai-input">
+                        <input type="text" id="ai-input" placeholder="Stel een vraag...">
                         <button class="ai-send-btn" id="ai-send"><span class="material-symbols-rounded" style="font-size: 1.2rem; color: var(--text-color);">send</span></button>
                     </div>
                 </div>

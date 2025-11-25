@@ -141,7 +141,8 @@ header {
     align-items: center;
     gap: 5px;
     border-radius: calc(var(--border-radius) - 4px);
-    box-shadow: 4px 4px 0px rgba(0,0,0,1);
+    /* shadow straight down, same width as button, reduced depth */
+    box-shadow: 0px 4px 0px rgba(0,0,0,0.95);
     transition: filter 0.08s, box-shadow 0.1s, transform 0.1s;
 }
 
@@ -150,8 +151,8 @@ header {
 }
 
 .search-button:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0,0,0,1);
+    transform: translateY(2px);
+    box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
 }
 
 .filters {
@@ -189,7 +190,7 @@ header {
     overflow-x: auto;
     gap: 20px;
     /* add breathing room so first/last cards are fully visible */
-    padding: 12px 24px; /* vertical + horizontal padding inside scroller */
+    padding: 12px 0; /* remove horizontal padding so scroller aligns with page margins */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     /* Hide scrollbars visually but keep scroll functionality */
@@ -229,7 +230,8 @@ header {
 
 .recipe-card:hover {
     transform: translateY(-2px);
-    box-shadow: 4px 4px 0px rgba(0,0,0,1); /* Hard shadow for retro feel */
+    /* shadow straight down, same width as card, reduced depth */
+    box-shadow: 0px 6px 0px rgba(0,0,0,0.95); /* slightly larger for cards */
 }
 
 .card-header {
@@ -284,7 +286,7 @@ header {
 .recipe-sidebar {
     /* Right side */
     position: sticky;
-    top: 20px;
+    top: 55px;
     height: fit-content;
 }
 
@@ -317,8 +319,8 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
+    border-bottom: none; /* removed visual line under Ingredients */
+    padding-bottom: 0;
 }
 
 .servings-control {
@@ -341,6 +343,11 @@ header {
 
 .ingredient-list {
     list-style: none;
+}
+
+/* Add breathing room between the 'Stappen' heading and the step cards */
+.steps-container h3 {
+    margin-bottom: 16px;
 }
 
 .ingredient-item {
@@ -377,13 +384,33 @@ header {
     transition: all 0.2s;
 }
 
+
+/* Make the icon inside the custom checkbox slightly smaller and animate its visibility
+   so it only shows when the checkbox is active (i.e., does NOT have the `unchecked` class). */
 .custom-checkbox .material-symbols-rounded {
     font-size: 18px;
+    transition: color 0.12s ease, opacity 0.12s ease;
+    color: inherit; /* inherit from the checkbox so we can override on unchecked */
+    opacity: 1;
 }
 
 .custom-checkbox.unchecked {
     background: transparent;
-    color: transparent;
+    color: transparent; /* keep container text color transparent */
+}
+
+/* Ensure the material symbol inside an 'unchecked' checkbox is hidden —
+   the root .material-symbols-rounded rule sets a color directly, so we must
+   override the child's color specifically when the parent is unchecked. */
+.custom-checkbox.unchecked .material-symbols-rounded {
+    color: transparent; /* hide glyph */
+    opacity: 0; /* fade out */
+}
+
+/* When the checkbox is active (not .unchecked) ensure the icon is visible */
+.custom-checkbox:not(.unchecked) .material-symbols-rounded {
+    color: var(--text-color);
+    opacity: 1;
 }
 
 /* Steps */
@@ -403,12 +430,19 @@ header {
     font-size: 1.1rem;
 }
 
+/* Ensure the time label in step headers is not bold and the icon matches the subdued color */
 .step-time {
     color: #888;
     font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 5px;
+    font-weight: 400; /* normal weight for e.g. "5 min" */
+}
+
+.step-time .material-symbols-rounded {
+    color: inherit; /* match the dimmed time color */
+    opacity: 0.9; /* slightly subdued */
 }
 
 /* AI Chat Box */
@@ -417,11 +451,58 @@ header {
     border-radius: var(--border-radius);
     padding: 20px;
     background: var(--card-bg);
-    min-height: 300px;
+    height: 560px; /* fixed height - box stays same size */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-shadow: none; /* removed shadow around AI box */
+}
+
+/* Robot icon shown when there are no messages yet */
+.ai-robot-wrapper {
+    display: flex;
+    flex: 0 0 auto; /* do not take remaining space so messages can expand */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 60px; /* nudge down toward center of the box */
+}
+
+.ai-robot {
+    color: #888;
+    opacity: 0.6; /* dimmed */
+    font-size: 4rem; /* larger */
+    user-select: none;
+}
+
+.ai-robot-text {
+    color: #888;
+    opacity: 0.6; /* dimmed to match icon */
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+.ai-robot.hidden,
+.ai-robot-wrapper.hidden {
+    display: none;
+}
+
+/* Ensure the messages area fills the remaining space between helper and input */
+.ai-messages {
+    flex: 1 1 auto;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    overflow-y: auto;
+    max-height: none; /* allow flex to control height */
+    /* Hide vertical scrollbar visually but keep scrolling */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.ai-messages::-webkit-scrollbar { display: none; }
+
+/* Ensure input wrapper stays at bottom */
+.ai-input-wrapper {
+    flex-shrink: 0;
 }
 
 .ai-chat-header {
@@ -431,15 +512,18 @@ header {
     font-size: 0.9rem;
 }
 
-.ai-messages {
-    flex: 1;
-    margin-bottom: 20px;
-    font-size: 0.95rem;
-    overflow-y: auto;
-    max-height: 400px;
-    /* Hide vertical scrollbar visually but keep scrolling */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+
+
+.ai-messages .message {
+    margin-top: 10px;
+}
+
+.ai-messages .message.user {
+    opacity: 0.55; /* dimmed user messages */
+}
+
+.ai-messages .message.ai {
+    opacity: 1; /* full opacity for AI */
 }
 
 .ai-messages::-webkit-scrollbar { display: none; }
@@ -471,7 +555,8 @@ header {
     justify-content: center;
     cursor: pointer;
     border-radius: 8px;
-    box-shadow: 4px 4px 0px rgba(0,0,0,1);
+    /* shadow straight down, same width as button, reduced depth */
+    box-shadow: 0px 4px 0px rgba(0,0,0,0.95);
     transition: filter 0.08s, box-shadow 0.1s, transform 0.1s;
 }
 
@@ -480,8 +565,8 @@ header {
 }
 
 .ai-send-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0,0,0,1); /* keep same press animation */
+    transform: translateY(2px);
+    box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
 }
 
 /* Footer Button */
@@ -502,11 +587,21 @@ header {
     align-items: center;
     gap: 10px;
     border-radius: var(--border-radius);
-    box-shadow: 4px 4px 0px rgba(0,0,0,1);
-    transition: transform 0.1s, box-shadow 0.1s;
+    /* shadow straight down, same width as button, reduced depth */
+    box-shadow: 0px 4px 0px rgba(0,0,0,0.95);
+    transition: filter 0.08s, transform 0.1s, box-shadow 0.1s;
 }
 
 .discover-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0,0,0,1);
+    transform: translateY(2px);
+    box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+}
+
+/* Give a little more breathing room under the discover heading */
+.discover-more h2 {
+    margin-bottom: 24px;
+}
+
+.discover-btn:hover {
+    filter: brightness(0.92); /* dim on hover like other buttons */
 }

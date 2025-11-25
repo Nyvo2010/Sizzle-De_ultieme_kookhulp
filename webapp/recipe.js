@@ -23,7 +23,7 @@ function renderRecipe(recipe) {
                 <div class="custom-checkbox unchecked"><span class="material-symbols-rounded">check</span></div>
                 <span>${ing.naam}</span>
             </div>
-            <span class="amount">${ing.hoeveelheid}</span>
+            <span class="amount" data-base="${ing.hoeveelheid}">${ing.hoeveelheid}</span>
         `;
         ingredientList.appendChild(li);
     });
@@ -48,6 +48,84 @@ function renderRecipe(recipe) {
         stepsList.appendChild(stepDiv);
     });
 }
+
+// Servings control logic
+let baseServings = 4; // default assumed base servings
+let currentServings = baseServings;
+
+function parseNumberFromString(text) {
+    if (!text) return null;
+    const trimmed = text.trim();
+    // Match numbers like 1, 1.5, 1,5 or fractions like 1/2
+    const match = trimmed.match(/^([0-9]+(?:[.,][0-9]+)?|[0-9]+\/[0-9]+)\s*(.*)$/);
+    if (!match) return { num: null, unit: trimmed };
+    let numStr = match[1];
+    let unit = match[2] ? match[2].trim() : '';
+    let num = null;
+    if (numStr.includes('/')) {
+        const parts = numStr.split('/').map(s => parseFloat(s));
+        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && parts[1] !== 0) {
+            num = parts[0] / parts[1];
+        }
+    } else {
+        num = parseFloat(numStr.replace(',', '.'));
+    }
+    if (isNaN(num)) num = null;
+    return { num, unit };
+}
+
+function formatNumber(n) {
+    if (n == null) return '';
+    if (Math.abs(n - Math.round(n)) < 1e-6) return String(Math.round(n));
+    // Show up to 2 decimals, trim trailing zeros
+    return parseFloat(n.toFixed(2)).toString();
+}
+
+function updateIngredientAmounts() {
+    const items = document.querySelectorAll('#ingredient-list .ingredient-item');
+    items.forEach(li => {
+        const span = li.querySelector('.amount');
+        const base = span.dataset.base || span.textContent;
+        const parsed = parseNumberFromString(base);
+        if (parsed.num == null) {
+            // Can't parse number, leave as-is
+            span.textContent = base;
+            return;
+        }
+        const factor = currentServings / baseServings;
+        const newNum = parsed.num * factor;
+        span.textContent = `${formatNumber(newNum)}${parsed.unit ? ' ' + parsed.unit : ''}`;
+    });
+}
+
+function setServings(n) {
+    if (n < 1) n = 1;
+    currentServings = n;
+    const sc = document.getElementById('servings-count');
+    if (sc) sc.textContent = `${currentServings} Personen`;
+    updateIngredientAmounts();
+}
+
+// Expose for testing if needed
+window.setServings = setServings;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize servings control buttons
+    const decreaseBtn = document.getElementById('decrease-servings');
+    const increaseBtn = document.getElementById('increase-servings');
+    const sc = document.getElementById('servings-count');
+    // Try to read initial servings from DOM (e.g., "4 Personen")
+    if (sc) {
+        const match = sc.textContent.trim().match(/(\d+)/);
+        if (match) {
+            baseServings = parseInt(match[1], 10) || baseServings;
+            currentServings = baseServings;
+        }
+    }
+
+    if (decreaseBtn) decreaseBtn.addEventListener('click', () => setServings(currentServings - 1));
+    if (increaseBtn) increaseBtn.addEventListener('click', () => setServings(currentServings + 1));
+});
 
 // Global function for onclick handlers (since module scope is not global)
 window.toggleCheckbox = function(element) {
@@ -83,23 +161,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('ai-send');
     const input = document.getElementById('ai-input');
     const messages = document.getElementById('ai-messages');
+    const aiRobotWrapper = document.querySelector('.ai-robot-wrapper');
+
+    // If there are already messages, hide the robot helper wrapper
+    if (aiRobotWrapper && messages && messages.children.length > 0) {
+        aiRobotWrapper.classList.add('hidden');
+    }
 
     sendBtn.addEventListener('click', () => {
         const text = input.value;
         if (!text) return;
 
-        // User message
+        // hide robot helper wrapper on first user interaction
+        if (aiRobotWrapper && !aiRobotWrapper.classList.contains('hidden')) {
+            aiRobotWrapper.classList.add('hidden');
+        }
+
+        // User message (plain text, dimmed)
         const userMsg = document.createElement('p');
+        userMsg.classList.add('message', 'user');
         userMsg.style.marginTop = '10px';
-        userMsg.innerHTML = `<strong>Jij:</strong> ${text}`;
+        userMsg.textContent = text;
         messages.appendChild(userMsg);
         input.value = '';
 
-        // AI Response (Mock)
+        // AI Response (Mock) — plain text, full opacity
         setTimeout(() => {
             const aiMsg = document.createElement('p');
+            aiMsg.classList.add('message', 'ai');
             aiMsg.style.marginTop = '10px';
-            aiMsg.innerHTML = `<strong>Sizzle AI:</strong> Dat is een goede vraag! Je kunt dit ingrediënt vervangen door iets anders als je dat wilt.`;
+            aiMsg.textContent = 'Dat is een goede vraag! Je kunt dit ingrediënt vervangen door iets anders als je dat wilt.';
             messages.appendChild(aiMsg);
             messages.scrollTop = messages.scrollHeight;
         }, 1000);
@@ -121,4 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
            });
         */
     });
+
+        // Allow pressing Enter in the input to send the message
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendBtn.click();
+            }
+        });
 });
