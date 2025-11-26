@@ -75,6 +75,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // Section 3: Trending nu
     contentArea.appendChild(renderSection('Trending nu', recommendations.trending, 'Trending'));
 
+    // Search bar functionality
+    const searchInput = document.querySelector('.search-input-wrapper input');
+    const searchButton = document.querySelector('.search-button');
+    
+    function handleSearch() {
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm) {
+            // Navigate to alle-recepten page with search query
+            window.location.href = `alle-recepten.html?search=${encodeURIComponent(searchTerm)}`;
+        }
+    }
+    
+    searchButton.addEventListener('click', handleSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    });
+
+    // Filter tags functionality
+    const filterTags = document.querySelectorAll('.filters .filter-tag');
+    filterTags.forEach(tag => {
+        tag.addEventListener('click', (e) => {
+            const filterName = tag.textContent.trim();
+            if (filterName !== 'Meer filters...') {
+                // Navigate to alle-recepten page with filter query
+                window.location.href = `alle-recepten.html?filter=${encodeURIComponent(filterName)}`;
+            }
+        });
+    });
+
     /* 
        Implementation according to API documentation:
        

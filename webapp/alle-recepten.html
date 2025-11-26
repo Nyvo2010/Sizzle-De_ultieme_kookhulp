@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Favorieten - Sizzle</title>
+    <title>Alle Recepten - Sizzle</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,20 +15,31 @@
         <header>
             <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">Sizzle</div>
             <div class="header-icons">
-                <span class="material-symbols-rounded" onclick="window.location.href='index.html'" style="cursor: pointer;">home</span>
+                <span class="material-symbols-rounded" onclick="window.location.href='favorites.html'" style="cursor: pointer;">favorite_border</span>
                 <span class="material-symbols-rounded" onclick="window.location.href='profile.html'" style="cursor: pointer;">person</span>
             </div>
         </header>
 
-        <section class="favorites-section">
-            <h1>Mijn Favorieten</h1>
+        <section class="hero">
+            <h1>Alle Recepten</h1>
             
-            <div id="favorites-container" class="recipe-scroll-container">
-                <!-- Favorites will be injected here -->
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <input type="text" id="search-input" placeholder="Zoek recepten...">
+                    <button class="search-button" id="search-btn"><span class="material-symbols-rounded">search</span> Zoek</button>
+                </div>
+            </div>
+
+            <div class="filters" id="filters-container">
+                <!-- Filters will be injected here -->
             </div>
         </section>
+
+        <div class="recipes-grid" id="recipes-grid">
+            <!-- Recipes will be injected here -->
+        </div>
     </div>
 
-    <script type="module" src="favorites.js"></script>
+    <script type="module" src="alle-recepten.js"></script>
 </body>
 </html>

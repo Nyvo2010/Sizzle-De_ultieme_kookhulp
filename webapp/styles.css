@@ -935,3 +935,50 @@ header {
 .hidden {
     display: none !important;
 }
+
+/* 4-Column Grid for All Recipes */
+.recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.recipes-grid .recipe-card {
+    flex: none; /* Override flex properties from recipe-card */
+}
+
+.no-results {
+    text-align: center;
+    color: #888;
+    padding: 40px 20px;
+    font-size: 1.1rem;
+    grid-column: 1 / -1;
+}
+
+.filter-tag.active {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+/* Responsive grid */
+@media (max-width: 1200px) {
+    .recipes-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .recipes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .recipes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
