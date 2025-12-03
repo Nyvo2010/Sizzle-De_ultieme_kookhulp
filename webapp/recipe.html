@@ -46,9 +46,35 @@
                 </div>
 
                 <div class="steps-container">
-                    <h3>Stappen</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <h3>Stappen</h3>
+                        <button id="cookmode-btn" class="primary-btn" style="font-size:1rem; padding: 8px 18px; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-symbols-rounded">play_circle</span> Kookmodus
+                        </button>
+                    </div>
                     <div id="steps-list">
                         <!-- Steps injected here -->
+                    </div>
+                </div>
+
+                <!-- Fullscreen Cook Mode Overlay -->
+                <div id="cookmode-overlay" class="cookmode-overlay hidden">
+                    <div class="cookmode-content">
+                        <button id="cookmode-exit" class="cookmode-exit-btn" title="Sluiten"><span class="material-symbols-rounded">close</span></button>
+                        <div class="cookmode-body">
+                            <div class="cookmode-step-section">
+                                <div class="cookmode-step-anim" id="cookmode-step-anim">
+                                    <!-- Step content injected here -->
+                                </div>
+                            </div>
+                            <div class="cookmode-ingredients-section" id="cookmode-ingredients">
+                                <!-- Ingredients injected here -->
+                            </div>
+                        </div>
+                        <div class="cookmode-controls">
+                            <button id="cookmode-prev" class="cookmode-nav-btn left"><span class="material-symbols-rounded">arrow_back</span> Vorige stap</button>
+                            <button id="cookmode-next" class="cookmode-nav-btn right">Volgende stap <span class="material-symbols-rounded">arrow_forward</span></button>
+                        </div>
                     </div>
                 </div>
             </div>

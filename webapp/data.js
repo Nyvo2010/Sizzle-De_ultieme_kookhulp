@@ -158,10 +158,10 @@ export const recipeDetails = {
         moeilijkheid: "makkelijk",
         ingrediënten: [
             { naam: "Pasta", hoeveelheid: "1 Kilo" },
-            { naam: "Bolognese", hoeveelheid: "0.5 Kilo" },
-            { naam: "Duh natuurlijk", hoeveelheid: "1 Stuk" },
-            { naam: "En kaas", hoeveelheid: "3 Kilo" },
-            { naam: "Altijd kaas", hoeveelheid: "30 Gram" }
+            { naam: "Wortel", hoeveelheid: "0.5 Kilo" },
+            { naam: "Paprika", hoeveelheid: "3 Stuks" },
+            { naam: "Rode pesto", hoeveelheid: "90 gram" },
+            { naam: "Tomaten", hoeveelheid: "4 stuks" }
         ],
         stappen: [
             { stapNummer: 1, beschrijving: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dictum, odio non pulvinar sodales, turpis nisi vehicula risus, ut commodo est lacus sed felis. Vivamus a augue facilisis, dignissim quam.", duur: 5 },

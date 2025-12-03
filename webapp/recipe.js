@@ -34,7 +34,6 @@ function renderRecipe(recipe) {
     recipe.stappen.forEach((step, index) => {
         const stepDiv = document.createElement('div');
         stepDiv.className = 'step-card';
-        
         stepDiv.innerHTML = `
             <div class="step-header">
                 <div class="checkbox-wrapper" onclick="toggleCheckbox(this)">
@@ -47,6 +46,215 @@ function renderRecipe(recipe) {
         `;
         stepsList.appendChild(stepDiv);
     });
+
+    // Store steps and ingredients globally for cookmode
+    window._sizzleRecipeSteps = recipe.stappen;
+    window._sizzleRecipeIngredients = recipe.ingrediënten;
+}
+
+// --- Cookmode Step-by-Step Overlay ---
+let cookmodeStepIdx = 0;
+
+function cookmodeRenderStep(idx) {
+    const steps = window._sizzleRecipeSteps;
+    const ingredients = window._sizzleRecipeIngredients;
+    if (!steps || !steps.length) return;
+    const step = steps[idx];
+    const anim = document.getElementById('cookmode-step-anim');
+    const ingredientsContainer = document.getElementById('cookmode-ingredients');
+    if (!step || !anim) return;
+    
+    // Animate out old content
+    anim.classList.remove('fade-in');
+    setTimeout(() => {
+        anim.innerHTML = `
+            <div class="cookmode-step-label">Stap ${step.stapNummer} van ${steps.length}</div>
+            <div class="cookmode-step-main">
+                <div class="cookmode-step-time"><span class="material-symbols-rounded">timer</span> ${step.duur} min</div>
+                <div class="cookmode-step-desc">${step.beschrijving}</div>
+            </div>
+        `;
+        setTimeout(() => anim.classList.add('fade-in'), 10);
+    }, 120);
+    
+    // Render ingredients with dashes and servings control
+    if (ingredientsContainer && ingredients) {
+        ingredientsContainer.innerHTML = `
+            <div class="cookmode-ingredients-header">
+                <h4>Ingrediënten</h4>
+                <div class="cookmode-servings-control">
+                    <button id="cookmode-decrease-servings"><span class="material-symbols-rounded" style="font-size: 1rem;">remove</span></button>
+                    <span id="cookmode-servings-count">${window._cookmodeServings || 4} Personen</span>
+                    <button id="cookmode-increase-servings"><span class="material-symbols-rounded" style="font-size: 1rem;">add</span></button>
+                </div>
+            </div>
+            <ul class="cookmode-ingredients-list" id="cookmode-ingredients-list">
+                ${ingredients.map(ing => `<li data-base="${ing.hoeveelheid}"><span class="ing-dash">–</span> ${ing.naam} <span class="ing-amount">${ing.hoeveelheid}</span></li>`).join('')}
+            </ul>
+        `;
+        // Attach servings control events
+        setupCookmodeServingsControl();
+        updateCookmodeIngredientAmounts();
+    }
+    
+    // Nav buttons - use invisible class instead of display:none for consistent layout
+    const prevBtn = document.getElementById('cookmode-prev');
+    const nextBtn = document.getElementById('cookmode-next');
+    if (prevBtn) {
+        if (idx > 0) {
+            prevBtn.classList.remove('invisible');
+        } else {
+            prevBtn.classList.add('invisible');
+        }
+    }
+    if (nextBtn) {
+        if (idx < steps.length - 1) {
+            nextBtn.innerHTML = 'Volgende stap <span class="material-symbols-rounded">arrow_forward</span>';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.innerHTML = 'Klaar!';
+            nextBtn.disabled = false;
+        }
+    }
+}
+
+function openCookmode() {
+    const overlay = document.getElementById('cookmode-overlay');
+    if (!overlay) return;
+    // Initialize cookmode servings from main servings
+    window._cookmodeServings = currentServings;
+    window._cookmodeBaseServings = baseServings;
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    cookmodeStepIdx = 0;
+    cookmodeRenderStep(cookmodeStepIdx);
+}
+
+function closeCookmode() {
+    const overlay = document.getElementById('cookmode-overlay');
+    if (!overlay) return;
+    overlay.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Cookmode servings control
+function updateCookmodeIngredientAmounts() {
+    const items = document.querySelectorAll('#cookmode-ingredients-list li');
+    const servings = window._cookmodeServings || 4;
+    const base = window._cookmodeBaseServings || 4;
+    items.forEach(li => {
+        const baseAmount = li.dataset.base;
+        const amountSpan = li.querySelector('.ing-amount');
+        if (!amountSpan || !baseAmount) return;
+        const parsed = parseNumberFromString(baseAmount);
+        if (parsed.num == null) {
+            amountSpan.textContent = baseAmount;
+            return;
+        }
+        const factor = servings / base;
+        const newNum = parsed.num * factor;
+        const converted = convertUnit(newNum, parsed.unit);
+        amountSpan.textContent = `${formatNumber(converted.num)}${converted.unit ? ' ' + converted.unit : ''}`;
+    });
+}
+
+function setCookmodeServings(n) {
+    if (n < 1) n = 1;
+    window._cookmodeServings = n;
+    const sc = document.getElementById('cookmode-servings-count');
+    if (sc) sc.textContent = `${n} Personen`;
+    updateCookmodeIngredientAmounts();
+}
+
+function setupCookmodeServingsControl() {
+    const decreaseBtn = document.getElementById('cookmode-decrease-servings');
+    const increaseBtn = document.getElementById('cookmode-increase-servings');
+    if (decreaseBtn) {
+        decreaseBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setCookmodeServings((window._cookmodeServings || 4) - 1);
+        };
+    }
+    if (increaseBtn) {
+        increaseBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setCookmodeServings((window._cookmodeServings || 4) + 1);
+        };
+    }
+}
+
+function cookmodeNext() {
+    const steps = window._sizzleRecipeSteps;
+    if (!steps) return;
+    if (cookmodeStepIdx < steps.length - 1) {
+        cookmodeStepIdx++;
+        cookmodeRenderStep(cookmodeStepIdx);
+    } else {
+        // Last step - close cookmode
+        closeCookmode();
+    }
+}
+
+function cookmodePrev() {
+    if (cookmodeStepIdx > 0) {
+        cookmodeStepIdx--;
+        cookmodeRenderStep(cookmodeStepIdx);
+    }
+}
+
+function setupCookmode() {
+    const overlay = document.getElementById('cookmode-overlay');
+    const openBtn = document.getElementById('cookmode-btn');
+    const closeBtn = document.getElementById('cookmode-exit');
+    const prevBtn = document.getElementById('cookmode-prev');
+    const nextBtn = document.getElementById('cookmode-next');
+    
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openCookmode();
+        });
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeCookmode();
+        });
+    }
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            cookmodePrev();
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            cookmodeNext();
+        });
+    }
+    
+    // ESC closes
+    document.addEventListener('keydown', (e) => {
+        if (overlay && !overlay.classList.contains('hidden') && e.key === 'Escape') {
+            closeCookmode();
+        }
+    });
+    
+    // Click outside to close
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeCookmode();
+            }
+        });
+    }
 }
 
 // Servings control logic
@@ -216,6 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRecipe(recipe);
         // Apply unit conversion immediately after rendering
         updateIngredientAmounts();
+        // Initialize cookmode after recipe is rendered
+        setupCookmode();
     } else {
         document.getElementById('recipe-title').textContent = "Recept niet gevonden";
     }

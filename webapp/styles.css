@@ -1,3 +1,251 @@
+/* --- Cookmode Fullscreen Overlay --- */
+.cookmode-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    background: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: cookmode-fadein 0.3s cubic-bezier(.4,0,.2,1);
+}
+.cookmode-overlay.hidden {
+    display: none !important;
+}
+.cookmode-content {
+    background: transparent;
+    padding: 48px 48px 32px 48px;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: cookmode-popin 0.35s cubic-bezier(.4,0,.2,1);
+}
+.cookmode-body {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 48px;
+    overflow: hidden;
+}
+.cookmode-step-section {
+    flex: 1.5 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 0;
+}
+.cookmode-ingredients-section {
+    flex: 1 1 0;
+    min-width: 220px;
+    max-width: 340px;
+    border-left: 1px solid var(--border-color);
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.cookmode-ingredients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.cookmode-ingredients-header h4 {
+    font-size: 1.1rem;
+    font-family: var(--font-serif);
+    margin: 0;
+    color: var(--text-color);
+}
+.cookmode-servings-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border-color);
+    padding: 4px 10px;
+    border-radius: 50px;
+    background: var(--bg-color);
+}
+.cookmode-servings-control button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+.cookmode-servings-control span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.cookmode-ingredients-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.cookmode-ingredients-list li {
+    font-size: 1rem;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+}
+.cookmode-ingredients-list li:last-child {
+    border-bottom: none;
+}
+.cookmode-ingredients-list .ing-dash {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+.cookmode-ingredients-list .ing-amount {
+    color: var(--text-color);
+    opacity: 0.6;
+    margin-left: auto;
+}
+.cookmode-step-anim {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 180px;
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    transition: opacity 0.25s cubic-bezier(.4,0,.2,1), transform 0.25s cubic-bezier(.4,0,.2,1);
+    width: 100%;
+}
+.cookmode-step-anim.fade-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.cookmode-step-label {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    font-family: var(--font-sans);
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+}
+.cookmode-step-main {
+    text-align: left;
+    width: 100%;
+}
+.cookmode-step-time {
+    color: var(--text-color);
+    opacity: 0.6;
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+}
+.cookmode-step-time .material-symbols-rounded {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+}
+.cookmode-step-desc {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: var(--text-color);
+    margin-bottom: 0;
+    line-height: 1.6;
+    min-height: 60px;
+    letter-spacing: 0.01em;
+}
+.cookmode-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+}
+.cookmode-nav-btn {
+    background: var(--accent-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    padding: 12px 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: filter 0.08s, transform 0.1s, opacity 0.15s;
+    outline: none;
+}
+.cookmode-nav-btn:hover {
+    filter: brightness(0.92);
+}
+.cookmode-nav-btn:active {
+    transform: translateY(1px);
+}
+.cookmode-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.cookmode-nav-btn.left {
+    justify-content: flex-start;
+}
+.cookmode-nav-btn.left.invisible {
+    visibility: hidden;
+}
+.cookmode-nav-btn.right {
+    margin-left: auto;
+}
+.cookmode-exit-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    z-index: 10;
+}
+.cookmode-exit-btn:hover {
+    background: rgba(0,0,0,0.05);
+}
+@keyframes cookmode-fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes cookmode-popin {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 768px) {
+    .cookmode-body {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .cookmode-ingredients-section {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding-left: 0;
+        padding-top: 16px;
+        max-width: none;
+    }
+    .cookmode-content {
+        padding: 32px 20px 24px 20px;
+        width: 100%;
+        min-height: 100vh;
+    }
+}
 :root {
     --bg-color: #FFFCF5;
     --text-color: #0B0800;
