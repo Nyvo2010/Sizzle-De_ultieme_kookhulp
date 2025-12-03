@@ -8,14 +8,13 @@ function createRecipeCard(recipe) {
     };
 
     const tagsHtml = recipe.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('');
-    const heartIcon = recipe.isFavorite ? 'favorite' : 'favorite_border';
-    const heartClass = recipe.isFavorite ? 'filled' : '';
+    const heartClass = recipe.isFavorite ? 'favorited' : '';
 
     card.innerHTML = `
         <div class="card-header">
             <div class="card-title">${recipe.titel}</div>
             <div class="favorite-icon" onclick="event.stopPropagation(); toggleFavorite(this, '${recipe.id}')">
-                <span class="material-symbols-rounded ${heartClass}">${heartIcon}</span>
+                <span class="material-symbols-rounded ${heartClass}">favorite</span>
             </div>
         </div>
         <div class="card-tags">
@@ -28,13 +27,11 @@ function createRecipeCard(recipe) {
 // Global function for favorite toggle
 window.toggleFavorite = function(element, id) {
     const icon = element.querySelector('.material-symbols-rounded');
-    if (icon.textContent === 'favorite_border') {
-        icon.textContent = 'favorite';
-        icon.classList.add('filled');
+    if (!icon.classList.contains('favorited')) {
+        icon.classList.add('favorited');
         console.log(`Added ${id} to favorites`);
     } else {
-        icon.textContent = 'favorite_border';
-        icon.classList.remove('filled');
+        icon.classList.remove('favorited');
         console.log(`Removed ${id} from favorites`);
     }
 };

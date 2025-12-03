@@ -164,12 +164,11 @@ export const recipeDetails = {
             { naam: "Tomaten", hoeveelheid: "4 stuks" }
         ],
         stappen: [
-            { stapNummer: 1, beschrijving: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dictum, odio non pulvinar sodales, turpis nisi vehicula risus, ut commodo est lacus sed felis. Vivamus a augue facilisis, dignissim quam.", duur: 5 },
-            { stapNummer: 2, beschrijving: "Voeg de gehakte ui en knoflook toe aan de pan en bak tot ze glazig zijn.", duur: 7 },
-            { stapNummer: 3, beschrijving: "Roer het gehakt erdoor en bak tot het gaar en bruin is.", duur: 8 },
-            { stapNummer: 4, beschrijving: "Voeg de tomaten, kruiden en een scheutje water toe. Laat het geheel 10 minuten zachtjes sudderen.", duur: 10 },
-            { stapNummer: 5, beschrijving: "Kook ondertussen de pasta volgens de aanwijzingen op de verpakking.", duur: 12 },
-            { stapNummer: 6, beschrijving: "Meng de pasta met de saus, breng op smaak en serveer met geraspte kaas.", duur: 3 }
+            { stapNummer: 1, beschrijving: "Voeg de gehakte ui en knoflook toe aan de pan en bak tot ze glazig zijn.", duur: 7 },
+            { stapNummer: 2, beschrijving: "Roer het gehakt erdoor en bak tot het gaar en bruin is.", duur: 8 },
+            { stapNummer: 3, beschrijving: "Voeg de tomaten, kruiden en een scheutje water toe. Laat het geheel 10 minuten zachtjes sudderen.", duur: 10 },
+            { stapNummer: 4, beschrijving: "Kook ondertussen de pasta volgens de aanwijzingen op de verpakking.", duur: 12 },
+            { stapNummer: 5, beschrijving: "Meng de pasta met de saus, breng op smaak en serveer met geraspte kaas.", duur: 3 }
         ]
     }
 };

@@ -5,6 +5,43 @@ function getRecipeId() {
     return params.get('id') || "1"; // Default to 1 if not found
 }
 
+// Constrain sidebar so it doesn't scroll past the last step
+function constrainSidebar() {
+    const sidebar = document.querySelector('.recipe-sidebar');
+    const stepsContainer = document.querySelector('.steps-container');
+    
+    if (!sidebar || !stepsContainer) return;
+    
+    const stepsRect = stepsContainer.getBoundingClientRect();
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const stickyTop = 55; // matches CSS sticky top value
+    
+    // Calculate the bottom of the steps container relative to viewport
+    const stepsBottom = stepsRect.bottom;
+    
+    // Calculate max height so sidebar bottom aligns with steps bottom
+    const availableHeight = stepsBottom - stickyTop;
+    
+    if (availableHeight > 0) {
+        sidebar.style.maxHeight = `${Math.max(availableHeight, 200)}px`;
+    } else {
+        // Steps are above viewport, hide or minimize sidebar
+        sidebar.style.maxHeight = '200px';
+    }
+}
+
+// Setup scroll and resize listeners for sidebar constraint
+function setupSidebarConstraint() {
+    // Initial constraint
+    constrainSidebar();
+    
+    // Update on scroll
+    window.addEventListener('scroll', constrainSidebar, { passive: true });
+    
+    // Update on resize
+    window.addEventListener('resize', constrainSidebar, { passive: true });
+}
+
 function renderRecipe(recipe) {
     document.getElementById('recipe-title').textContent = recipe.titel;
     
@@ -170,9 +207,23 @@ function cookmodeRenderStep(idx) {
             nextBtn.innerHTML = 'Volgende stap <span class="material-symbols-rounded">arrow_forward</span>';
             nextBtn.disabled = false;
         } else {
-            nextBtn.innerHTML = 'Klaar!';
+            nextBtn.innerHTML = '<span class="material-symbols-rounded">check_circle</span> Klaar!';
             nextBtn.disabled = false;
         }
+    }
+
+    // Update step indicators (dots)
+    const indicatorsEl = document.getElementById('cookmode-step-indicators');
+    if (indicatorsEl) {
+        // Create indicators for totalSteps and mark the current one active
+        const nodes = [];
+        for (let i = 0; i < totalSteps; i++) {
+            const active = i === idx ? 'active' : '';
+            nodes.push(`<span class="indicator ${active}"></span>`);
+        }
+        indicatorsEl.innerHTML = nodes.join('');
+        // For accessibility, update aria-hidden if desired
+        indicatorsEl.setAttribute('aria-hidden', 'false');
     }
 }
 
@@ -267,6 +318,52 @@ function setupCookmodeServingsControl() {
     }
 }
 
+function showConfetti() {
+    // Use confetti function from tsparticles-confetti bundle
+    if (typeof confetti !== 'undefined') {
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        // Launch confetti from left side
+        const launchFromLeft = () => {
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0, y: 0.6 },
+                colors: ['#ffffff', '#FF0000', '#FFD700', '#00FF00', '#0099FF'],
+                zIndex: 99999
+            });
+        };
+
+        // Launch confetti from right side
+        const launchFromRight = () => {
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1, y: 0.6 },
+                colors: ['#ffffff', '#FF0000', '#FFD700', '#00FF00', '#0099FF'],
+                zIndex: 99999
+            });
+        };
+
+        // Launch confetti repeatedly
+        const interval = setInterval(() => {
+            if (Date.now() > end) {
+                clearInterval(interval);
+                return;
+            }
+            launchFromLeft();
+            launchFromRight();
+        }, 150);
+
+        // Initial burst
+        launchFromLeft();
+        launchFromRight();
+    }
+}
+
 function cookmodeNext() {
     const steps = window._sizzleRecipeSteps;
     if (!steps) return;
@@ -276,7 +373,8 @@ function cookmodeNext() {
         cookmodeStepIdx++;
         cookmodeRenderStep(cookmodeStepIdx);
     } else {
-        // Last step - close cookmode
+        // Last step - show confetti and close cookmode
+        showConfetti();
         closeCookmode();
     }
 }
@@ -508,17 +606,18 @@ function setupFavoriteButton(recipeId) {
     
     if (!favoriteBtn || !favoriteIcon) return;
     
+    // Always use filled heart icon
+    favoriteIcon.textContent = 'favorite';
+    
     // Check if recipe is already favorited (from localStorage)
     const favorites = JSON.parse(localStorage.getItem('sizzle_favorites') || '[]');
     const isFavorite = favorites.includes(recipeId);
     
     // Set initial state
     if (isFavorite) {
-        favoriteIcon.textContent = 'favorite';
-        favoriteIcon.classList.add('filled');
+        favoriteIcon.classList.add('favorited');
     } else {
-        favoriteIcon.textContent = 'favorite_border';
-        favoriteIcon.classList.remove('filled');
+        favoriteIcon.classList.remove('favorited');
     }
     
     // Handle click
@@ -530,15 +629,13 @@ function setupFavoriteButton(recipeId) {
             // Remove from favorites
             const newFavorites = currentFavorites.filter(id => id !== recipeId);
             localStorage.setItem('sizzle_favorites', JSON.stringify(newFavorites));
-            favoriteIcon.textContent = 'favorite_border';
-            favoriteIcon.classList.remove('filled');
+            favoriteIcon.classList.remove('favorited');
             console.log(`Removed ${recipeId} from favorites`);
         } else {
             // Add to favorites
             currentFavorites.push(recipeId);
             localStorage.setItem('sizzle_favorites', JSON.stringify(currentFavorites));
-            favoriteIcon.textContent = 'favorite';
-            favoriteIcon.classList.add('filled');
+            favoriteIcon.classList.add('favorited');
             console.log(`Added ${recipeId} to favorites`);
         }
     });
@@ -556,6 +653,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCookmode();
         // Initialize favorite button
         setupFavoriteButton(id);
+        // Setup sidebar constraint to stop at last step
+        setupSidebarConstraint();
     } else {
         document.getElementById('recipe-title').textContent = "Recept niet gevonden";
     }
@@ -706,11 +805,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = selection.toString().trim();
         
         if (text && text.length > 0) {
-            // Check if selection is within recipe content (ingredients or steps)
-            const recipeContent = document.querySelector('.recipe-content');
-            if (recipeContent && selection.anchorNode && recipeContent.contains(selection.anchorNode)) {
-                showButtonAtSelection(text, selection);
-                return;
+            // Only show button if selection is within ingredients box or step cards
+            const ingredientsBox = document.querySelector('.ingredients-box');
+            const stepsContainer = document.querySelector('.steps-container');
+            const anchorNode = selection.anchorNode;
+            
+            if (anchorNode) {
+                const isInIngredients = ingredientsBox && ingredientsBox.contains(anchorNode);
+                const isInSteps = stepsContainer && stepsContainer.contains(anchorNode);
+                
+                if (isInIngredients || isInSteps) {
+                    showButtonAtSelection(text, selection);
+                    return;
+                }
             }
         }
         
@@ -771,9 +878,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Store the context for AI questions
         currentContextText = selectedText;
 
-        // Show context box with truncated text (one line)
-        const displayText = selectedText.length > 50 
-            ? `"${selectedText.substring(0, 50)}..."` 
+        // Show context box with truncated text (keep it short to prevent width expansion)
+        const displayText = selectedText.length > 30 
+            ? `"${selectedText.substring(0, 30)}..."` 
             : `"${selectedText}"`;
         aiContextBoxText.textContent = displayText;
         aiContextBoxInput.classList.remove('hidden');
