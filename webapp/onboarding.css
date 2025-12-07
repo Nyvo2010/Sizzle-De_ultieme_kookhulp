@@ -7,6 +7,20 @@
     --border-radius: 12px;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'DM Sans', sans-serif;
+    
+    /* Consistent Spacing Variables */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 40px;
+    --spacing-3xl: 48px;
+    --spacing-4xl: 64px;
+    
+    /* Component spacing */
+    --container-padding: 20px;
+    --section-margin: var(--spacing-2xl);
 }
 
 * {
@@ -43,7 +57,7 @@ h1, h2, h3, h4, h5, h6 {
 .onboarding-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: var(--container-padding);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -73,8 +87,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Header */
 header {
-    padding: 20px 0;
-    margin-bottom: 40px;
+    padding: var(--container-padding) 0;
+    margin-bottom: var(--section-margin);
 }
 
 .logo {
@@ -96,13 +110,13 @@ header {
 
 h1 {
     font-size: 3rem;
-    margin-bottom: 20px;
+    margin-bottom: var(--container-padding);
     line-height: 1.2;
 }
 
 .subtitle {
     color: #666;
-    margin-bottom: 32px;
+    margin-bottom: var(--spacing-xl);
     font-size: 1rem;
 }
 
@@ -110,7 +124,7 @@ h1 {
 .onboarding-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--container-padding);
     width: 100%;
     text-align: left;
 }
@@ -118,7 +132,7 @@ h1 {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-xs);
 }
 
 .form-group label {
@@ -132,13 +146,13 @@ h1 {
     background: var(--card-bg);
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: var(--spacing-sm);
 }
 
 .form-group .input-wrapper input {
     flex: 1;
     border: none;
-    padding: 10px;
+    padding: var(--spacing-sm);
     font-size: 1rem;
     outline: none;
     background: transparent;
@@ -155,11 +169,11 @@ h1 {
     flex-wrap: wrap;
     justify-content: flex-start;
     align-self: flex-start;
-    gap: 10px;
-    margin-top: 8px;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
     max-height: 50vh;
     overflow-y: auto;
-    padding-right: 8px;
+    padding-right: var(--spacing-xs);
     width: 100%;
 }
 
@@ -181,9 +195,9 @@ h1 {
 .tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--spacing-xs);
     border: 1px solid var(--border-color);
-    padding: 8px 20px;
+    padding: var(--spacing-xs) var(--container-padding);
     border-radius: 50px;
     font-size: 0.9rem;
     background: var(--card-bg);
@@ -206,7 +220,7 @@ h1 {
     display: none;
     font-size: 0.95rem;
     color: var(--text-color);
-    margin-left: 8px;
+    margin-left: var(--spacing-xs);
     line-height: 1;
 }
 
@@ -216,19 +230,19 @@ h1 {
 
 /* Footer */
 .step-footer {
-    padding-top: 20px;
-    padding-bottom: 40px;
+    padding-top: var(--container-padding);
+    padding-bottom: var(--section-margin);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: var(--container-padding);
     width: 100%;
 }
 
 .step-indicators {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: var(--spacing-xs);
 }
 
 .indicator {
@@ -246,13 +260,13 @@ h1 {
 .next-btn {
     background-color: var(--accent-color);
     border: 1px solid var(--border-color);
-    padding: 12px 30px;
+    padding: var(--spacing-sm) var(--spacing-xl);
     font-weight: bold;
     cursor: pointer;
     font-size: 1rem;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm);
     border-radius: var(--border-radius);
     box-shadow: 0px 4px 0px rgba(0,0,0,0.95);
     transition: filter 0.08s, transform 0.1s, box-shadow 0.1s;
@@ -274,21 +288,21 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    margin-top: 40px;
+    gap: var(--spacing-md);
+    margin-top: var(--section-margin);
     width: 100%;
 }
 
 .secondary-btn {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    padding: 12px 30px;
+    padding: var(--spacing-sm) var(--spacing-xl);
     font-weight: bold;
     cursor: pointer;
     font-size: 1rem;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm);
     border-radius: var(--border-radius);
     box-shadow: 0px 4px 0px rgba(0,0,0,0.95);
     transition: filter 0.08s, transform 0.1s, box-shadow 0.1s;
@@ -305,14 +319,123 @@ h1 {
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
 }
 
-/* Responsive adjustments */
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   Optimized for iPhone 12 (390px) and iPhone 16 Pro (393px)
+   ======================================== */
+
 @media (max-width: 480px) {
-    h1 {
-        font-size: 2rem;
+    .onboarding-container {
+        padding: var(--spacing-md);
     }
-    
+
+    header {
+        padding: var(--spacing-md) 0;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .logo {
+        font-size: 1.6rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .step-content {
+        padding: 0;
+    }
+
+    .onboarding-form {
+        gap: var(--spacing-md);
+    }
+
+    .form-group .input-wrapper {
+        padding: var(--spacing-xs);
+    }
+
+    .form-group .input-wrapper input {
+        padding: var(--spacing-sm) var(--spacing-xs);
+        font-size: 1rem;
+    }
+
     .tag {
-        padding: 8px 14px;
+        padding: var(--spacing-sm) var(--spacing-md);
         font-size: 0.85rem;
+    }
+
+    .tags-container {
+        gap: var(--spacing-xs);
+        max-height: 40vh;
+    }
+
+    .step-footer {
+        padding-bottom: var(--spacing-lg);
+    }
+
+    .next-btn,
+    .secondary-btn {
+        width: 100%;
+        justify-content: center;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        min-height: 48px;
+    }
+
+    .login-options {
+        margin-top: var(--spacing-lg);
+        gap: var(--spacing-sm);
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+    .onboarding-container {
+        padding: var(--spacing-sm);
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .tag {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+}
+
+/* Safe area insets for iPhone notch/home indicator */
+@supports (padding: max(0px)) {
+    @media (max-width: 480px) {
+        .onboarding-container {
+            padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+            padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+            padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
+        }
+
+        .step-footer {
+            padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+        }
+    }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+    .tag,
+    .next-btn,
+    .secondary-btn {
+        min-height: 44px;
+    }
+}
+
+/* Prevent horizontal overflow on mobile */
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden;
     }
 }
