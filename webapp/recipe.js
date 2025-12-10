@@ -1,6 +1,8 @@
 function getRecipeId() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('id') || "1"; // Default to 1 if not found
+    const id = params.get('id');
+    console.log('Recipe ID from URL:', id);
+    return id; // Default to 1 if not found
 }
 
 // Constrain sidebar so it doesn't scroll past the last step
@@ -49,38 +51,46 @@ function renderRecipe(recipe) {
     // Ingredients
     const ingredientList = document.getElementById('ingredient-list');
     ingredientList.innerHTML = '';
-    recipe.ingrediënten.forEach((ing, index) => {
-        const li = document.createElement('li');
-        li.className = 'ingredient-item';
-        
-        li.innerHTML = `
-            <div class="checkbox-wrapper" onclick="toggleCheckbox(this)">
-                <div class="custom-checkbox unchecked"><span class="material-symbols-rounded">check</span></div>
-                <span>${ing.naam}</span>
-            </div>
-            <span class="amount" data-base="${ing.hoeveelheid}">${ing.hoeveelheid}</span>
-        `;
-        ingredientList.appendChild(li);
-    });
+    if (recipe.ingrediënten && recipe.ingrediënten.length > 0) {
+        recipe.ingrediënten.forEach((ing, index) => {
+            const li = document.createElement('li');
+            li.className = 'ingredient-item';
+            
+            li.innerHTML = `
+                <div class="checkbox-wrapper" onclick="toggleCheckbox(this)">
+                    <div class="custom-checkbox unchecked"><span class="material-symbols-rounded">check</span></div>
+                    <span>${ing.naam}</span>
+                </div>
+                <span class="amount" data-base="${ing.hoeveelheid}">${ing.hoeveelheid}</span>
+            `;
+            ingredientList.appendChild(li);
+        });
+    } else {
+        ingredientList.innerHTML = '<p>Ingrediënten voor dit recept zijn nog niet beschikbaar.</p>';
+    }
 
     // Steps
     const stepsList = document.getElementById('steps-list');
     stepsList.innerHTML = '';
-    recipe.stappen.forEach((step, index) => {
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'step-card';
-        stepDiv.innerHTML = `
-            <div class="step-header">
-                <div class="checkbox-wrapper" onclick="toggleCheckbox(this)">
-                    <div class="custom-checkbox unchecked"><span class="material-symbols-rounded">check</span></div>
-                    <span>Stap ${step.stapNummer}</span>
+    if (recipe.stappen && recipe.stappen.length > 0) {
+        recipe.stappen.forEach((step, index) => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step-card';
+            stepDiv.innerHTML = `
+                <div class="step-header">
+                    <div class="checkbox-wrapper" onclick="toggleCheckbox(this)">
+                        <div class="custom-checkbox unchecked"><span class="material-symbols-rounded">check</span></div>
+                        <span>Stap ${step.stapNummer}</span>
+                    </div>
+                    <span class="step-time">${step.duur} min <span class="material-symbols-rounded" style="font-size: 1rem; vertical-align: text-bottom;">timer</span></span>
                 </div>
-                <span class="step-time">${step.duur} min <span class="material-symbols-rounded" style="font-size: 1rem; vertical-align: text-bottom;">timer</span></span>
-            </div>
-            <p>${step.beschrijving}</p>
-        `;
-        stepsList.appendChild(stepDiv);
-    });
+                <p>${step.beschrijving}</p>
+            `;
+            stepsList.appendChild(stepDiv);
+        });
+    } else {
+        stepsList.innerHTML = '<p>De stappen voor dit recept zijn nog niet beschikbaar.</p>';
+    }
 
     // Store steps and ingredients globally for cookmode
     window._sizzleRecipeSteps = recipe.stappen;
