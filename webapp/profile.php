@@ -15,10 +15,10 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">Sizzle</div>
+            <div class="logo" onclick="window.location.href='index.php'" style="cursor: pointer;">Sizzle</div>
             <div class="header-icons">
-                <span class="material-symbols-rounded" onclick="window.location.href='index.html'">home</span>
-                <span class="material-symbols-rounded filled" onclick="window.location.href='index.html'">person</span>
+                <span class="material-symbols-rounded" onclick="window.location.href='index.php'">home</span>
+                <span class="material-symbols-rounded filled" onclick="window.location.href='index.php'">person</span>
             </div>
         </header>
 

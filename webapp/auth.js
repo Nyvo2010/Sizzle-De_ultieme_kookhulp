@@ -14,19 +14,19 @@ window.logout = function() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
     console.log('authToken and username removed from localStorage');
-    window.location.href = 'login.html';
+    window.location.href = 'login.php';
 }
 
 window.redirectIfNotLoggedIn = function() {
     if (!isLoggedIn()) {
-        window.location.href = 'login.html';
+        window.location.href = 'login.php';
     }
 }
 
 window.redirectToProfileIfLoggedIn = function() {
     if (isLoggedIn()) {
-        window.location.href = 'profile.html';
+        window.location.href = 'profile.php';
     } else {
-        window.location.href = 'login.html';
+        window.location.href = 'login.php';
     }
 }

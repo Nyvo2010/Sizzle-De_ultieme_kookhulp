@@ -40,7 +40,7 @@ function setupLogin() {
                 localStorage.setItem('authToken', result.token);
                 localStorage.setItem('username', result.username);
                 // Redirect to home or profile
-                window.location.href = 'index.html';
+                window.location.href = 'index.php';
             } else {
                 const error = await response.json();
                 alert(`Inloggen mislukt: ${error.message}`);

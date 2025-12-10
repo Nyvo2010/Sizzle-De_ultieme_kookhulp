@@ -121,7 +121,7 @@ window.deleteAccount = async function() {
 
                 if (response.ok) {
                     alert('Account succesvol verwijderd.');
-                    logout(); // This will redirect to login.html
+                    logout(); // This will redirect to login.php
                 } else {
                     const error = await response.json();
                     alert(`Verwijderen van account mislukt: ${error.message}`);
@@ -137,7 +137,7 @@ window.deleteAccount = async function() {
 document.addEventListener('DOMContentLoaded', async () => {
     // Check if logged in
     if (!isLoggedIn()) {
-        window.location.href = 'login.html';
+        window.location.href = 'login.php';
         return;
     }
 
