@@ -3,6 +3,8 @@ from flask_cors import CORS
 
 import os
 import json
+import random
+
 
 import logging
 
@@ -281,6 +283,56 @@ def delete_account():
 def not_found(error):
     logging.warning(f"404 error at path: {request.path}")
     return jsonify({"error": "Not Found"}), 404
+
+
+@app.route('/api/aanbevelingen', methods=['GET'])
+@jwt_required(optional=True)
+def get_recommendations():
+    try:
+        current_user = get_jwt_identity()
+        users = load_user_data()
+        user_tags = users.get(current_user, {}).get('tags', []) if current_user else []
+
+        all_recipes = load_recipe_data()
+        
+        # Personalized recommendations based on user tags
+        voorkeur_recipes = [r for r in all_recipes if any(tag in r['tags'] for tag in user_tags)]
+        if not voorkeur_recipes:
+             voorkeur_recipes = random.sample(all_recipes, min(len(all_recipes), 5))
+        else:
+            voorkeur_recipes = random.sample(voorkeur_recipes, min(len(voorkeur_recipes), 5))
+
+
+        # Recommendations for "avondeten"
+        avondeten_recipes = [r for r in all_recipes if 'Avondeten' in r['tags']]
+        if not avondeten_recipes:
+            avondeten_recipes = random.sample(all_recipes, min(len(all_recipes), 5))
+        else:
+            avondeten_recipes = random.sample(avondeten_recipes, min(len(avondeten_recipes), 5))
+
+        # Trending recipes (for now, just random popular recipes)
+        trending_recipes = random.sample(all_recipes, min(len(all_recipes), 5))
+
+        recommendations = {
+            "voorkeur": voorkeur_recipes,
+            "avondeten": avondeten_recipes,
+            "trending": trending_recipes
+        }
+        
+        logging.info("Recommendations generated and sent.")
+        return jsonify(recommendations), 200
+
+    except Exception as e:
+        logging.exception("An error occurred while generating recommendations")
+        all_recipes = load_recipe_data()
+        
+        # Fallback to random recommendations if an error occurs
+        recommendations = {
+            "voorkeur": random.sample(all_recipes, min(len(all_recipes), 5)),
+            "avondeten": random.sample(all_recipes, min(len(all_recipes), 5)),
+            "trending": random.sample(all_recipes, min(len(all_recipes), 5))
+        }
+        return jsonify(recommendations), 200
 
 if __name__ == '__main__':
     try:
