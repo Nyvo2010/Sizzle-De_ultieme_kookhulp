@@ -1,7 +1,7 @@
 {
   "id": "2",
   "titel": "Tomatensoep",
-  "ingrediënten": [    
+  "ingrediënten": [
     {"naam": "rijpe tomaten", "hoeveelheid": "1kg, in stukken"},
     {"naam": "trostomaten", "hoeveelheid": "250g, gehalveerd"},
     {"naam": "ui", "hoeveelheid": "2, gesnipperd"},
@@ -33,7 +33,7 @@
     {"stapNummer": 8, "beschrijving": "Voeg de verse basilicum toe en pureer kort mee. Breng op smaak met peper en zout.", "duur": 2},
     {"stapNummer": 9, "beschrijving": "Serveer de soep met een lepel crème fraîche en croutons.", "duur": 1}
   ],
-  "tags": ["soep", "gezond"],
+  "tags": ["Gemiddeld", "Vegetarisch", "Comfort food"],
   "bereidingstijd": 60,
   "moeilijkheid": "middel"
 }

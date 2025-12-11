@@ -1,7 +1,5 @@
 {
   "id": "8",
-
-
   "titel": "Omelet",
   "ingrediënten": [
     {"naam": "eieren", "hoeveelheid": "4"},
@@ -28,7 +26,7 @@
     {"stapNummer": 8, "beschrijving": "Vouw de omelet dubbel en bak nog 1 minuut tot de kaas smelt.", "duur": 1},
     {"stapNummer": 9, "beschrijving": "Serveer direct, eventueel met extra kruiden.", "duur": 1}
   ],
-  "tags": ["ontbijt", "snel"],
+  "tags": ["Snelle bereiding", "Pittig", "Aziatisch"],
   "bereidingstijd": 20,
   "moeilijkheid": "middel"
 }
