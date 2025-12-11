@@ -7,10 +7,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Mijn Profiel - Sizzle</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dark.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0" />
+    <script src="theme.js"></script>
 </head>
 <body>
     <div class="container">
@@ -18,15 +20,21 @@
             <div class="logo" onclick="window.location.href='index.php'" style="cursor: pointer;">Sizzle</div>
             <div class="header-icons">
                 <span class="material-symbols-rounded" onclick="window.location.href='index.php'">home</span>
-                <span class="material-symbols-rounded filled" onclick="window.location.href='index.php'">person</span>
+                <span class="material-symbols-rounded filled" onclick="window.location.href='profile.php'">person</span>
             </div>
         </header>
 
         <section class="profile-section">
-            <h1>Mijn Profiel</h1>
+            <h1>Instellingen</h1>
             
-            <div class="profile-card">
-                <div class="profile-form">
+            <div class="settings-card">
+                <div class="tabs">
+                    <button class="tab-link active" data-tab="general">Algemeen</button>
+                    <button class="tab-link" data-tab="security">Beveiliging</button>
+                    <button class="tab-link" data-tab="appearance">Uiterlijk</button>
+                </div>
+
+                <div id="general" class="tab-content">
                     <div class="form-group">
                         <label for="username">Gebruikersnaam</label>
                         <div class="username-wrapper">
@@ -41,7 +49,9 @@
                             <button class="edit-username-btn" id="edit-name-btn" onclick="toggleEditName()">Bewerk</button>
                         </div>
                     </div>
+                </div>
 
+                <div id="security" class="tab-content">
                     <div class="password-change-form" id="password-change-form">
                         <h3>Wachtwoord wijzigen</h3>
                         <div class="form-group">
@@ -62,16 +72,30 @@
                             <button class="secondary-btn" onclick="clearPasswordForm()">Wissen</button>
                         </div>
                     </div>
+                    <div class="profile-actions">
+                        <button class="danger-btn" onclick="deleteAccount()">
+                            <span class="material-symbols-rounded">delete</span>
+                            Account verwijderen
+                        </button>
+                    </div>
+                </div>
+
+                <div id="appearance" class="tab-content">
+                    <div class="form-group">
+                        <label>Thema</label>
+                        <div class="theme-switch-wrapper">
+                            <label class="theme-switch" for="theme-toggle-switch">
+                                <input type="checkbox" id="theme-toggle-switch" />
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="profile-actions">
                     <button class="primary-btn logout-btn" id="logout-btn">
                         <span class="material-symbols-rounded">logout</span>
                         Uitloggen
-                    </button>
-                    <button class="danger-btn" onclick="deleteAccount()">
-                        <span class="material-symbols-rounded">delete</span>
-                        Account verwijderen
                     </button>
                 </div>
             </div>

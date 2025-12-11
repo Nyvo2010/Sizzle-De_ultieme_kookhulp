@@ -239,6 +239,7 @@
 .cookmode-nav-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 .cookmode-nav-btn:disabled {
     opacity: 0.5;
@@ -277,6 +278,7 @@
 .cookmode-exit-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 @keyframes cookmode-fadein {
     from { opacity: 0; }
@@ -304,13 +306,13 @@
         min-height: 100vh;
     }
 }
-:root {
-    --bg-color: #FFFCF5;
-    --text-color: #0B0800;
+html[data-theme="dark"] {
+    --bg-color: #1A1A1A;
+    --text-color: #E0E0E0;
     --accent-color: #E6B800; /* Gold/Orange */
-    --icon-color: #5c4a00; /* Dark yellow (almost black) for icons */
-    --card-bg: #FFFCF5;
-    --border-color: #0B0800;
+    --icon-color: #FFD60A;
+    --card-bg: #222222;
+    --border-color: #444444;
     --border-radius: 12px;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'DM Sans', sans-serif;
@@ -475,6 +477,7 @@ header {
 .search-button:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .filters {
@@ -924,6 +927,7 @@ cent color */
 .ai-send-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 /* Footer Button */
@@ -952,6 +956,7 @@ cent color */
 .discover-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 /* Give a little more breathing room under the discover heading */
@@ -1014,7 +1019,7 @@ cent color */
 }
 
 .form-group input[readonly] {
-    background: #f5f5f5;
+    background: var(--card-bg);
     cursor: not-allowed;
 }
 
@@ -1090,6 +1095,7 @@ cent color */
 .edit-username-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .edit-password-btn {
@@ -1110,6 +1116,7 @@ cent color */
 .edit-password-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .password-group {
@@ -1137,6 +1144,8 @@ cent color */
 .change-password-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
+    filter: brightness(1.15);
 }
 
 .password-change-form {
@@ -1174,6 +1183,7 @@ cent color */
 .change-password-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .password-error {
@@ -1218,6 +1228,7 @@ cent color */
 .primary-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .secondary-btn {
@@ -1258,6 +1269,7 @@ cent color */
 .danger-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(211, 47, 47, 0.95);
+    filter: brightness(1.15);
 }
 
 .profile-actions {
@@ -1376,6 +1388,7 @@ cent color */
 .ai-selection-btn:active {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 .ai-selection-btn.hidden {
@@ -1387,6 +1400,7 @@ cent color */
     transform: translateY(2px);
     opacity: 0.95;
     box-shadow: 0px 2px 0px rgba(0,0,0,0.9);
+    filter: brightness(1.15);
 }
 
 /* AI Context Box above input - shows selected text */
